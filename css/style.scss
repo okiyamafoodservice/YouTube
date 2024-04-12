@@ -1,0 +1,58 @@
+@charset "utf-8";
+
+@mixin flex($a: center, $j: space-between) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: $j;
+  align-items: $a;
+}
+
+$breakpoints: (
+  "sm": "screen and (min-width: 400px)",
+  "md": "screen and (min-width: 768px)",
+  "lg": "screen and (min-width: 1000px)",
+  "xl": "screen and (min-width: 1200px)",
+) !default;
+
+@mixin mq($breakpoint) {
+  @media #{map-get($breakpoints, $breakpoint)} {
+    @content;
+  }
+}
+body {
+  background-color: rgb(0, 0, 0);
+  color: rgb(0, 0, 0);
+}
+
+ul {
+  list-style-type: none;
+}
+
+.startstop {
+  position: absolute;
+
+  @include flex();
+  font-size: 20px;
+  width: fit-content;
+  margin: auto;
+  cursor: pointer;
+  background-color: rgba(151, 151, 151, 0.5);
+  border-radius: 25px;
+  padding: 10px 50px;
+
+  li {
+    margin: 0 10px;
+    padding: 1px;
+    &:hover {
+      background-color: #ff0000;
+    }
+  }
+
+  #doplay {
+    background-color: #ffffff;
+  }
+}
+
+.buttons {
+  @include flex();
+}

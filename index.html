@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/modern-css-reset/dist/reset.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="player"></div>
+
+    <!-- 動画が表示されている<div>の下に追加 -->
+    <ul class="startstop">
+      <li id="do10sPrev">10秒戻る</li>
+      <li id="doplay">再生</li>
+      <li id="dopause">一時停止</li>
+      <li id="mute">ミュート</li>
+      <li id="do10sNext">10秒先へ</li>
+    </ul>
+
+    <nav>
+      <ul class="buttons">
+        <li>
+          <select id="MovieId" class="ytMovie" name="ytMovie">
+            <option selected>選択してください。</option>
+            <option value="C_oDQM_4Sbo">
+              KANDYTOWN - Curtain Call (feat. KEIJU, Ryohu, IO)
+            </option>
+            <option value="PLgYflfgq0M">
+              Suchmos "STAY TUNE" (Official Music Video)
+            </option>
+            <option value="L5JYeP4hbEo">
+              田我流【MV】やべ〜勢いですげー盛り上がる
+            </option>
+            <option value="rUhhPZtYl7Y">
+              宇多田ヒカル - Goodbye Happiness
+            </option>
+          </select>
+        </li>
+      </ul>
+
+      <label
+        >ボリューム<input
+          type="range"
+          min="0"
+          max="100"
+          name="volume"
+          id="volume"
+          value="50"
+        />
+        <span id="volumeNum"></span>
+      </label>
+    </nav>
+
+    <script>
+      // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement("script");
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName("script")[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      let youtubeId = "ZFCs-EeodMc";
+
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player("player", {
+          height: "600px",
+          width: "100%",
+          videoId: youtubeId,
+          playerVars: {
+            //③パラメータの設定
+            playsinline: 1,
+            controls: 0,
+          },
+          events: {
+            onReady: onPlayerReady,
+            //onStateChange: onPlayerStateChange,
+          },
+        });
+      }
+
+      // 4. The API will call this function when the video player is ready.
+      function onPlayerReady(event) {
+        event.target.playVideo(); //①最初の再生を止める
+        let currentVol = 5; //②最初のボリュームを設定（0〜100）
+        event.target.setVolume(currentVol); //③Playerのボリュームに設定
+        document.querySelector("#volume").value = currentVol; //④rangeFormに音量を設定
+        document.querySelector("#volumeNum").textContent = currentVol; //⑤テキストにも音量を数値で表示
+      }
+
+      // 5. The API calls this function when the player's state changes.
+      //    The function indicates that when playing a video (state=1),
+      //    the player should play for six seconds and then stop.
+      var done = false;
+      function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING && !done) {
+          setTimeout(stopVideo, 6000);
+          done = true;
+        }
+      }
+      function stopVideo() {
+        player.stopVideo();
+      }
+
+      //再生関数
+      function playTheVideo() {
+        player.playVideo();
+      }
+
+      //再生イベント
+      let doplayBtn = document.querySelector("#doplay");
+      doplayBtn.addEventListener("click", function () {
+        playTheVideo(); //関数名に変更
+      });
+
+      //一時停止関数
+      function pauseTheVideo() {
+        player.pauseVideo();
+      }
+
+      //一時停止イベント
+      let dopauseBtn = document.querySelector("#dopause");
+      dopauseBtn.addEventListener("click", function () {
+        pauseTheVideo();
+      });
+
+      //ミュート関数
+      function onMute() {
+        //ミュートの時、trueを返すのでミュートを解除します。
+        if (player.isMuted()) {
+          player.unMute();
+        } else {
+          //ミュートが解除されている時はfalseなので、ミュートにします。
+          player.mute();
+        }
+      }
+
+      //ミュートイベント
+      let onMuteBtn = document.querySelector("#mute");
+      onMuteBtn.addEventListener("click", function () {
+        onMute();
+        if (onMuteBtn.innerText === "ミュート") {
+          onMuteBtn.innerText = "ミュート解除";
+        } else {
+          onMuteBtn.innerText = "ミュート";
+        }
+      });
+
+      //10秒前にの関数
+      function onePrev() {
+        let currentTime = player.getCurrentTime();
+        player.seekTo(currentTime - 10);
+      }
+
+      //10秒後にの関数
+      function oneNext() {
+        let currentTime = player.getCurrentTime();
+        player.seekTo(currentTime + 10);
+      }
+
+      //10秒前へイベント
+      let onePrevBtn = document.querySelector("#do10sPrev");
+      onePrevBtn.addEventListener("click", function () {
+        onePrev();
+      });
+
+      //10秒後へイベント
+      let oneNextBtn = document.querySelector("#do10sNext");
+      oneNextBtn.addEventListener("click", function () {
+        oneNext();
+      });
+
+      function volumeFn(vol) {
+        let currentVol = player.getVolume();
+        player.setVolume(vol);
+      }
+
+      //ボリュームイベント
+      let volumeBtn = document.querySelector("#volume");
+      let volumeTxt = document.querySelector("#volumeNum");
+      volumeBtn.addEventListener("change", function () {
+        volumeFn(this.value);
+        volumeTxt.textContent = this.value;
+      });
+
+      let movieid = document.querySelector("#MovieId");
+      movieid.addEventListener("change", function () {
+        youtubeId = movieid.value;
+        //プレイヤー削除
+        player.destroy();
+        onYouTubeIframeAPIReady();
+      });
+    </script>
+  </body>
+</html>

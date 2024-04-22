@@ -1,3 +1,13 @@
+const onMuteBtn = document.querySelector(".onMuteBtn");
+const screenMenu = document.querySelector(".screen__menu");
+const movieID = document.getElementById("MovieId");
+
+const playPauseBtn = document.getElementById("play-pause");
+const volume = document.querySelector(".volume");
+const playBtn = document.querySelector(".play");
+const seekbar = document.getElementById("seekbar");
+const ytSearchBtn = document.querySelector("#searchBtn");
+
 // 2. This code loads the IFrame Player API code asynchronously.
 var tag = document.createElement("script");
 tag.src = "https://www.youtube.com/iframe_api";
@@ -29,7 +39,7 @@ function onYouTubeIframeAPIReady() {
 // 4. The API will call this function when the video player is ready.
 function onPlayerReady(event) {
   event.target.playVideo(); //①最初の再生を止める
-  let currentVol = 5; //②最初のボリュームを設定（0〜100）
+  let currentVol = 30; //②最初のボリュームを設定（0〜100）
   event.target.setVolume(currentVol); //③Playerのボリュームに設定
 }
 
@@ -48,16 +58,68 @@ function stopVideo() {
 }
 
 // select要素の値が変わったときに動画を切り替える
-const movieID = document.getElementById("MovieId");
-document.getElementById("MovieId").addEventListener("change", function () {
-  const selectedVideo = this.value;
+movieID.addEventListener("click", function (event) {
+  const selectedVideo = event.target.getAttribute("data-value");
   if (selectedVideo) {
     player.loadVideoById(selectedVideo);
   }
 });
 
+// 検索
+const selectvideo = document.querySelector(".searchlist");
+//検索して、値を取得する関数
+function ytSearch(val) {
+  const key = "AIzaSyDFzM2GTuzXLzvFtC3-89Vvsm8dekYY3_Y"; //自分のキーに書き換えます。
+  const num = 100;
+  const part = "snippet";
+  const type = "video";
+  const query = val;
+  fetch(
+    `https://www.googleapis.com/youtube/v3/search?type=${type}&part=${part}&maxResults=${num}&key=${key}&q=${query}&playsinline=1`
+  )
+    .then((data) => data.json())
+    .then((obj) => {
+      selectvideo.innerHTML = "";
+      for (let i in obj["items"]) {
+        //各videoIdとタイトルを取得して変数に代入
+        const ytId = obj["items"][i]["id"]["videoId"];
+        const ytTitle = obj["items"][i]["snippet"]["title"];
+        //liを作成して、videoIdとtitleを所定の場所に設置し、要素を追加していく。
+        const liTag = document.createElement("li");
+        liTag.innerHTML = ytTitle;
+        liTag.setAttribute("data-value", ytId);
+        liTag.classList.add("searchlist__content");
+        selectvideo.appendChild(liTag);
+
+        liTag.addEventListener("click", function () {
+          screenMenu.classList.remove("displayblock");
+        });
+      }
+    });
+}
+
+const searchlistContent = document.querySelectorAll(".searchlist__content");
+
+// seachlistContentの要素がクリックされたときに、screenMenuを非表示にする
+searchlistContent.forEach(function (item) {
+  item.addEventListener("click", function () {
+    screenMenu.classList.remove("displayblock");
+  });
+});
+
+// "do10sNext"というIDを持つ要素にクリックイベントリスナーを追加
+document.getElementById("do10sNext").addEventListener("click", function () {
+  // select要素から選択された動画のIDを取得
+  const selectedVideo = movieID.value;
+  // 選択された動画のIDが存在する場合
+  if (selectedVideo) {
+    // 選択された動画を読み込む
+    player.loadVideoById(selectedVideo);
+  }
+});
+
 // 再生・一時停止
-document.getElementById("play-pause").addEventListener("click", function () {
+playPauseBtn.addEventListener("click", function () {
   const playerState = player.getPlayerState();
   if (playerState === YT.PlayerState.PLAYING) {
     player.pauseVideo();
@@ -66,66 +128,60 @@ document.getElementById("play-pause").addEventListener("click", function () {
   }
 });
 
-const onMuteBtn = document.querySelector(".onMuteBtn");
+//次の動画へ
 
-document.getElementById("mute").addEventListener("click", function () {
-  if (player.isMuted()) {
-    player.unMute();
-    mute.src = "./images/unmute.svg";
+document.getElementById("do10sNext").addEventListener("click", function () {
+  const selector = document.getElementById("MovieId");
+  const nextIndex = selector.selectedIndex + 1;
+
+  // 最後のオプションが選択されていた場合、最初のオプションに戻る
+  if (nextIndex >= selector.options.length) {
+    selector.selectedIndex = 0;
   } else {
-    player.mute();
-    mute.src = "./images/mute.svg";
+    selector.selectedIndex = nextIndex;
+  }
+
+  // 選択された動画を読み込む
+  const selectedVideo = selector.value;
+  if (selectedVideo) {
+    player.loadVideoById(selectedVideo);
   }
 });
 
-// 早送り・巻き戻し 長押しで早送りまたは巻き戻し
-
-let pressTimer;
-let rewindInterval;
-
-document.getElementById("do10sNext").addEventListener("mousedown", function () {
-  pressTimer = window.setTimeout(function () {
-    player.setPlaybackRate(10.0); // 4倍速再生
-  }, 500); // 長押しと判断するまでの時間（ミリ秒）
-});
-
-document.getElementById("do10sNext").addEventListener("mouseup", function () {
-  clearTimeout(pressTimer); // 長押しタイマーをクリア
-  player.setPlaybackRate(1.0); // 通常速度に戻す
-});
-
-document.getElementById("do10sPrev").addEventListener("mousedown", function () {
-  pressTimer = window.setTimeout(function () {
-    player.setPlaybackRate(1.0); // 通常速度に戻す
-    rewindInterval = setInterval(function () {
-      let currentTime = player.getCurrentTime();
-      player.seekTo(currentTime - 1); // 1秒巻き戻す
-    }, 100); // 0.1秒ごとに巻き戻す
-  }, 500); // 長押しと判断するまでの時間（ミリ秒）
-});
-
-document.getElementById("do10sPrev").addEventListener("mouseup", function () {
-  clearTimeout(pressTimer); // 長押しタイマーをクリア
-  clearInterval(rewindInterval); // 巻き戻しを停止
-});
-
-// 再生10秒スキップ
-
-document.getElementById("do10sNext").addEventListener("click", function () {
-  const currentTime = player.getCurrentTime();
-  player.seekTo(currentTime + 10);
-});
+//前の動画へ
 
 document.getElementById("do10sPrev").addEventListener("click", function () {
-  const currentTime = player.getCurrentTime();
-  player.seekTo(currentTime - 10);
+  const selector = document.getElementById("MovieId");
+  const nextIndex = selector.selectedIndex - 1;
+
+  // 最後のオプションが選択されていた場合、最初のオプションに戻る
+  if (nextIndex >= selector.options.length) {
+    selector.selectedIndex = 0;
+  } else {
+    selector.selectedIndex = nextIndex;
+  }
+
+  // 選択された動画を読み込む
+  const selectedVideo = selector.value;
+  if (selectedVideo) {
+    player.loadVideoById(selectedVideo);
+  }
+});
+
+onMuteBtn.addEventListener("click", function () {
+  screenMenu.classList.toggle("displayblock");
+
+  if (screenMenu.classList.contains("displayblock")) {
+    player.pauseVideo(); // 動画を一時停止
+  } else {
+    player.playVideo(); // 動画を再生
+  }
 });
 
 let longpressTimer;
 let volumeDownInterval;
-const volume = document.querySelector(".volume");
 
-document.querySelector(".play").addEventListener("click", function () {
+playBtn.addEventListener("click", function () {
   let currentVolume = player.getVolume();
   if (currentVolume < 100) {
     player.setVolume(currentVolume + 5); // 音量を5%上げる
@@ -148,7 +204,8 @@ function updateSeekbar() {
 }
 
 // シークバーの値を動画の再生位置に反映
-document.getElementById("seekbar").addEventListener("input", function () {
+
+seekbar.addEventListener("input", function () {
   const duration = player.getDuration();
   const seekToTime = (this.value / 100) * duration;
   player.seekTo(seekToTime);
@@ -157,35 +214,6 @@ document.getElementById("seekbar").addEventListener("input", function () {
 // 動画が再生されている間、シークバーを定期的に更新
 let seekbarInterval = setInterval(updateSeekbar, 1000); // 1秒ごとに更新
 
-// 検索
-const selectvideo = document.querySelector(".searchlist");
-//検索して、値を取得する関数
-function ytSearch(val) {
-  const key = "AIzaSyDBWgVJ1fwxCAClPI5qmZ-a7sX2EA_OT34"; //自分のキーに書き換えます。
-  const num = 100;
-  const part = "snippet";
-  const type = "video";
-  const query = val;
-  fetch(
-    `https://www.googleapis.com/youtube/v3/search?type=${type}&part=${part}&maxResults=${num}&key=${key}&q=${query}&playsinline=1`
-  )
-    .then((data) => data.json())
-    .then((obj) => {
-      selectvideo.innerHTML = "";
-      for (let i in obj["items"]) {
-        //各videoIdとタイトルを取得して変数に代入
-        const ytId = obj["items"][i]["id"]["videoId"];
-        const ytTitle = obj["items"][i]["snippet"]["title"];
-        //optionを作成して、videoIdとtitleを所定の場所に設置し、要素を追加していく。
-        const optionTag = document.createElement("option");
-        optionTag.textContent = ytTitle;
-        optionTag.setAttribute("value", ytId);
-        selectvideo.appendChild(optionTag);
-      }
-    });
-}
-
-const ytSearchBtn = document.querySelector("#searchBtn");
 ytSearchBtn.addEventListener("click", function (e) {
   const ytSearchVal = document.querySelector("#ytSearch").value;
   e.preventDefault(); //検索ボタンの送信をストップしておく。
@@ -193,7 +221,25 @@ ytSearchBtn.addEventListener("click", function (e) {
   ytSearch(ytSearchVal);
 });
 
-const options = document.querySelectorAll("option");
-options.forEach((option) => {
-  console.log(options.value);
+//nextBtnを押した場合の処理
+
+document.getElementById("changeBtn").addEventListener("click", function () {});
+
+document.getElementById("backBtn").addEventListener("click", function () {});
+
+searchBtn.addEventListener("click", function () {
+  screenMenu.classList.add("displayblock");
+  if (screenMenu.classList.contains("displayblock")) {
+    player.pauseVideo(); // 動画を一時停止
+  } else {
+    player.playVideo(); // 動画を再生
+  }
+});
+
+searchBtn.addEventListener("click", function () {
+  if (screenMenu.classList.contains("displayblock")) {
+    removeClass("displayblock");
+  } else {
+    player.playVideo(); // 動画を再生
+  }
 });

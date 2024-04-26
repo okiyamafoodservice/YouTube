@@ -80,6 +80,10 @@ ul {
 .screen__menu .thumbnailimage {
   height: 100%;
 }
+.screen__menu .thumbnailimage img {
+  margin: auto;
+  text-align: center;
+}
 .screen__menu .searchlist {
   margin: 0;
   width: 50%;

@@ -1,70 +1,71 @@
 <!DOCTYPE html>
 <html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/modern-css-reset/dist/reset.min.css"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css" />
-  <link rel="stylesheet" href="./css/style.css" />
+    <title>player</title>
+  </head>
 
-  <title>player</title>
-</head>
+  <body oncontextmenu="return false;">
+    <div class="inner">
+      <div class="iPod">
+        <div class="screen">
+          <div class="screen__menu video-selector">
+            <ul id="MovieId" class="ytMovie searchlist">
+              <li data-value="" class="searchlist__content">検索結果</li>
+              <li data-value="MbO5hcQuJaQ" class="searchlist__content">
+                stillichimiya【夏休みスペシャル】ISIP / 一宮特殊捜査隊 01
+              </li>
+              <li data-value="sDmDnieB8r8" class="searchlist__content">
+                stillichimiya【夏休みスペシャル】ISIP / 一宮特殊捜査隊 02
+              </li>
+              <li data-value="mdycB9qOj2E" class="searchlist__content">
+                stillichimiya【夏休みスペシャル】ISIP / 一宮特殊捜査隊 03
+              </li>
+              <li data-value="cEIzr5vYzno" class="searchlist__content">
+                stillichimiya【夏休みスペシャル】ISIP / 一宮特殊捜査隊 04
+              </li>
+            </ul>
 
-<body oncontextmenu="return false;">
-  <div class="inner">
-    <div class="iPod">
-      <div class="screen">
-        <div class="screen__menu video-selector">
-
-          <ul id="MovieId" class="ytMovie searchlist">
-            <li data-value="" class="searchlist__content">検索結果</li>
-            <li data-value="MbO5hcQuJaQ" class="searchlist__content">stillichimiya【夏休みスペシャル】ISIP / 一宮特殊捜査隊 01</li>
-            <li data-value="sDmDnieB8r8" class="searchlist__content">stillichimiya【夏休みスペシャル】ISIP / 一宮特殊捜査隊 02</li>
-            <li data-value="mdycB9qOj2E" class="searchlist__content">stillichimiya【夏休みスペシャル】ISIP / 一宮特殊捜査隊 03</li>
-            <li data-value="cEIzr5vYzno" class="searchlist__content">stillichimiya【夏休みスペシャル】ISIP / 一宮特殊捜査隊 04</li>
-          </ul>
-
-          <div class="thumbnailimage">
-
+            <div class="thumbnailimage"></div>
           </div>
-
+          <div id="player"></div>
+          <input type="range" id="seekbar" value="0" max="100" step="1" />
         </div>
-        <div id="player"></div>
-        <input type="range" id="seekbar" value="0" max="100" step="1" />
-      </div>
-      <div class="wheelcover">
-        <div class="wheel">
-          <div class="onMuteBtn">
-            <p id="mute">MENU</p>
+        <div class="wheelcover">
+          <div class="wheel">
+            <div class="onMuteBtn">
+              <p id="mute">MENU</p>
+            </div>
+            <img id="do10sNext" src="./images/next.svg" />
+            <img id="do10sPrev" src="./images/back.svg" />
+            <img id="play-pause" src="./images/playpause.svg" />
+            <div class="play" draggable="true"></div>
           </div>
-          <img id="do10sNext" src="./images/next.svg" />
-          <img id="do10sPrev" src="./images/back.svg" />
-          <img id="play-pause" src="./images/playpause.svg" />
-          <div class="play" draggable="true"></div>
         </div>
+      </div>
+
+      <div class="searchArea">
+        <form>
+          <input type="search" id="ytSearch" value="" />
+          <button id="searchBtn">検索</button>
+        </form>
+      </div>
+
+      <div class="changebtn">
+        <button id="changeBtn">変更</button>
+        <button id="backBtn">戻る</button>
       </div>
     </div>
 
-    <p class="volume">音量マイナス</p>
+    <script src="./js/script.js"></script>
+  </body>
 
-    <div class="searchArea">
-      <form>
-        <input type="search" id="ytSearch" value="" />
-        <button id="searchBtn">検索</button>
-      </form>
-
-
-    </div>
-
-    <div class="changebtn">
-      <button id="changeBtn">変更</button>
-      <button id="backBtn">戻る</button>
-    </div>
-  </div>
-
-  <script src="./script.js"></script>
-</body>
-
-<body></body>
-
+  <body></body>
 </html>

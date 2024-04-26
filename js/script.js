@@ -84,9 +84,13 @@ function ytSearch(val) {
         //各videoIdとタイトルを取得して変数に代入
         const ytId = obj["items"][i]["id"]["videoId"];
         const ytTitle = obj["items"][i]["snippet"]["title"];
+        // サムネイルURLを取得
+        const ytThumbnail =
+          obj["items"][i]["snippet"]["thumbnails"]["default"]["url"];
         //liを作成して、videoIdとtitleを所定の場所に設置し、要素を追加していく。
         const liTag = document.createElement("li");
-        liTag.innerHTML = ytTitle;
+        // サムネイルとタイトルを追加
+        liTag.innerHTML = `<img src="${ytThumbnail}" alt="${ytTitle}">${ytTitle}`;
         liTag.setAttribute("data-value", ytId);
         liTag.classList.add("searchlist__content");
         selectvideo.appendChild(liTag);

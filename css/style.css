@@ -15,8 +15,10 @@ ul {
 .searchArea {
   width: 100%;
 }
-.searchArea form {
+.searchArea input {
   margin-inline: auto;
+  margin-top: 10px;
+  width: 100%;
 }
 
 .video-selector {
@@ -79,6 +81,7 @@ ul {
 }
 .screen__menu .thumbnailimage {
   height: 100%;
+  width: 50%;
 }
 .screen__menu .thumbnailimage img {
   margin: auto;
@@ -191,21 +194,6 @@ select {
   background: #3a3a3a;
   margin: 68px auto;
   border-radius: 100%;
-}
-
-.volume {
-  width: 180px;
-  background: #ffffff;
-  margin: -10px auto;
-  border-radius: 25px;
-  font-size: 16px;
-  color: #1b1b1b;
-  padding: 5px 20px 1px;
-  font-weight: bold;
-  cursor: pointer;
-  text-align: center;
-  position: relative;
-  display: block;
 }
 
 @media (min-width: 400px) {

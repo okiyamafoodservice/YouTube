@@ -70,7 +70,7 @@ const selectvideo = document.querySelector(".searchlist");
 //検索して、値を取得する関数
 function ytSearch(val) {
   const key = "AIzaSyDFzM2GTuzXLzvFtC3-89Vvsm8dekYY3_Y"; //自分のキーに書き換えます。
-  const num = 100;
+  const num = 20;
   const part = "snippet";
   const type = "video";
   const query = val;

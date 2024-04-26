@@ -134,6 +134,10 @@ playPauseBtn.addEventListener("click", function () {
 
 //次の動画へ
 
+const videoNextBtn = document.getElementById("do10sNext");
+const videoPrevBtn = document.getElementById("do10sPrev");
+
+// 次の動画へ
 let currentIndex = 0; // グローバル変数として現在のインデックスを追跡
 
 document.getElementById("do10sNext").addEventListener("click", function () {
@@ -149,8 +153,26 @@ document.getElementById("do10sNext").addEventListener("click", function () {
   }
 });
 
+let holdTimer;
+
+videoNextBtn.addEventListener("mousedown", function () {
+  holdTimer = window.setInterval(function () {
+    // ここで10秒早送りする処理を書く
+    const currentTime = player.getCurrentTime();
+    player.seekTo(currentTime + 10);
+  }, 1000); // 1000ミリ秒（1秒）ごとに発火
+});
+
+videoNextBtn.addEventListener("mouseup", function () {
+  clearInterval(holdTimer); // ボタンを離したときにタイマーをクリア
+});
+
+videoNextBtn.addEventListener("mouseup", function () {
+  clearInterval(holdTimer); // ボタンを離したときにタイマーをクリア
+});
+
 //前の動画へ
-document.getElementById("do10sPrev").addEventListener("click", function () {
+videoPrevBtn.addEventListener("click", function () {
   const listItems = document.querySelectorAll("#MovieId li");
 
   // 前のインデックスを計算

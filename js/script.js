@@ -134,41 +134,32 @@ playPauseBtn.addEventListener("click", function () {
 
 //次の動画へ
 
-document.getElementById("do10sNext").addEventListener("click", function () {
-  const selector = document.getElementById("MovieId");
-  const nextIndex = selector.selectedIndex + 1;
+let currentIndex = 0; // グローバル変数として現在のインデックスを追跡
 
-  // 最後のオプションが選択されていた場合、最初のオプションに戻る
-  if (nextIndex >= selector.options.length) {
-    selector.selectedIndex = 0;
-  } else {
-    selector.selectedIndex = nextIndex;
-  }
+document.getElementById("do10sNext").addEventListener("click", function () {
+  const listItems = document.querySelectorAll("#MovieId li");
+
+  // 次のインデックスを計算
+  currentIndex = (currentIndex + 1) % listItems.length;
 
   // 選択された動画を読み込む
-  const selectedVideo = selector.value;
-  if (selectedVideo) {
-    player.loadVideoById(selectedVideo);
+  const videoId = listItems[currentIndex].dataset.value;
+  if (videoId) {
+    player.loadVideoById(videoId);
   }
 });
 
 //前の動画へ
-
 document.getElementById("do10sPrev").addEventListener("click", function () {
-  const selector = document.getElementById("MovieId");
-  const nextIndex = selector.selectedIndex - 1;
+  const listItems = document.querySelectorAll("#MovieId li");
 
-  // 最後のオプションが選択されていた場合、最初のオプションに戻る
-  if (nextIndex >= selector.options.length) {
-    selector.selectedIndex = 0;
-  } else {
-    selector.selectedIndex = nextIndex;
-  }
+  // 前のインデックスを計算
+  currentIndex = (currentIndex - 1 + listItems.length) % listItems.length;
 
   // 選択された動画を読み込む
-  const selectedVideo = selector.value;
-  if (selectedVideo) {
-    player.loadVideoById(selectedVideo);
+  const videoId = listItems[currentIndex].dataset.value;
+  if (videoId) {
+    player.loadVideoById(videoId);
   }
 });
 
@@ -184,20 +175,6 @@ onMuteBtn.addEventListener("click", function () {
 
 let longpressTimer;
 let volumeDownInterval;
-
-playBtn.addEventListener("click", function () {
-  let currentVolume = player.getVolume();
-  if (currentVolume < 100) {
-    player.setVolume(currentVolume + 5); // 音量を5%上げる
-  }
-});
-
-volume.addEventListener("click", function () {
-  let currentVolume = player.getVolume();
-  if (currentVolume > 0) {
-    player.setVolume(currentVolume - 5); // 音量を5%下げる
-  }
-});
 
 // 動画の再生位置をシークバーに反映
 function updateSeekbar() {

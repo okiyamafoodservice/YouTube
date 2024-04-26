@@ -224,12 +224,6 @@ ytSearchBtn.addEventListener("click", function (e) {
   ytSearch(ytSearchVal);
 });
 
-//nextBtnを押した場合の処理
-
-document.getElementById("changeBtn").addEventListener("click", function () {});
-
-document.getElementById("backBtn").addEventListener("click", function () {});
-
 searchBtn.addEventListener("click", function () {
   screenMenu.classList.add("displayblock");
   if (screenMenu.classList.contains("displayblock")) {
@@ -241,7 +235,7 @@ searchBtn.addEventListener("click", function () {
 
 searchBtn.addEventListener("click", function () {
   if (screenMenu.classList.contains("displayblock")) {
-    removeClass("displayblock");
+    screenMenu.classList.remove("displayblock");
   } else {
     player.playVideo(); // 動画を再生
   }
